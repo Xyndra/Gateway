@@ -1,0 +1,84 @@
+= Specific Parts of the Gateway Protocol v1.0
+
+== Identifier w/ version
+
+Bit count: Variable(not hash because if there are too many versions, white
+noise will get problematic)
+
+This is the protocol name(including version), for example
+"Gateway Protocol v1.0".
+
+== Signal Hash
+
+Bit count: 256
+
+This is the hash of the signal that is being sent. This contains everything
+starting from the following part. Ignored if message length is incorrect.
+
+== Gate ID
+
+Bit count: See xref:Gateway.adoc#SpecialFormat[Special format]
+
+This is the ID of the gate that is sending the message.
+
+Use this when talking to a Gateway. In a radio-like scenario where multiple
+servers are listening, this should be ignored if wrong. In an internet-like
+scenario where only one server is listening, this should be transmitted to
+the correct subnetwork(only if servers are related though).
+
+== Gate Hash
+
+Bit count: 256
+
+This is the hash of the Gate ID. Transfer is cancelled and an error is
+returned if this is incorrect.
+
+== Receiver ID
+
+Bit count: See xref:Gateway.adoc#SpecialFormat[Special format]
+
+This is the ID of the receiver that is supposed to receive the message.
+If this is incorrect, the transfer is cancelled and an error is returned.
+
+== Receiver Hash
+
+Bit count: 256
+
+This is the hash of the Receiver ID. Transfer is cancelled and an error is
+returned if this is incorrect.
+
+== Receiver Program Name
+
+Bit count: See xref:Gateway.adoc#SpecialFormat[Special format]
+
+This is the name of the program that is supposed to receive the message.
+If this is incorrect, not found, or offline the transfer is cancelled and an
+error is returned.
+
+== Message Size
+
+Bit count: See xref:Gateway.adoc#SpecialFormat[Special format]
+
+This is the size of the message in bytes. If this is incorrect, the transfer
+is cancelled and an error is returned.
+
+== Message Hash
+
+Bit count: 256
+
+This is the hash of the message. If this is incorrect, the transfer is
+cancelled and an error is returned.
+
+== Message
+
+Bit count: See <<Message Size>>
+
+This is the message that will be relayed to the receiver.
+
+== Error Code
+
+Bit count: 256 (or 0 if no error)
+
+This is the error code that will be returned if an error occurs. If the
+message size is incorrect, this will be read and sent to both sender
+and receiver. If the message size is correct, this will be ignored.

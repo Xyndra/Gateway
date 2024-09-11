@@ -1,0 +1,112 @@
+= Gateway Protocol v1.0
+
+== Purpose
+The purpose of the Gateway Protocol is to provide a connection-independent
+way to communicate with "Gateways", which have a similar role to routers.
+
+This is nice for the following scenarios:
+
+. You have a closed network and want to provide a way to communicate with it
+from the outside. You can create a publicly accessible Gateway and then set
+up very dynamic firewall rules.
+. You want to protect your network from DDoS attacks. Since this is designed
+with "Gateway dies first" in mind, you can simply make the Gateway limited
+in resources and have it stop or throttle connections if it gets too much.
+. Apocalyptic scenario: the internet, which is centralized, gets
+blocked/censored. This protocol can be applied with radio or light signals.
+. Push towards decentralization: currently, there is no way for "normies"
+to actually host any content, so they will always be dependent on big
+platforms. The goal of this protocol is to stop this and make apps able to
+communicate with other clients semi-independently
+(You can't remove ISPs and centralized IP lists)
+
+== Parts
+The Gateway Protocol consists of the following parts:
+
+. Identifier w/ version (ensure message is actually in the Gateway Protocol)
+. Signal Hash
+. Gate ID
+. Gate Hash
+. Receiver ID
+. Receiver Hash
+. Receiver App Name
+. Message Size
+. Message Hash
+. Message
+. (optional) Error Code
+(can be used, for example, if transmission is cancelled)
+
+Note that by "hash", SHA-256 is implied.
+
+For more information on the parts, see xref:SpecificParts.adoc[Specific Parts].
+
+[#SpecialFormat]
+== Special Format
+
+*Gate ID*, *Receiver ID*, *Receiver App Name* and *Message Hash* are in a
+custom format, which is used for infinite scalability.
+
+This format works by writing one byte, and then a continuation bit.If the
+continuation bit is `1`, it will repeat.If it is `0`, the last `0` s and
+from the last `1` are cut off.This has the trade-off of having to append
+`10000000` if the last bit should have been `0`, however it seems like the
+best way to do it since it only uses one additional byte in the worst case
+and is extremely easy to implement.
+
+== Responses
+The Gateway Protocol will relay the response from the Receiver to the Sender.
+If there are any problems in during the connection, the Gateway will send
+a hashed error code. Note that these may differ for specific Gateways, but
+the general ones are defined here.
+
+* (No response) - No error occurred(but Gate ID might have been wrong).
+* "Identifier unsupported" - The Identifier is not supported by the Gateway.
+* "Receiver not found" - The Receiver ID is not found.
+* "App not found" - The Receiver App Name is not registered for the
+Receiver ID.
+* "Receiver offline" - The Receiver is offline.
+* "App offline" - The Receiver App Name is offline.
+* "Incorrect message size" - The message is bigger or smaller than the
+specified size.
+* "Disallowed message size" - The message is bigger than the maximum.
+* "Message hash incorrect" - The message hash is incorrect.
+* "Signal hash incorrect" - The signal hash is incorrect.
+* "Receiver hash incorrect" - The receiver hash is incorrect.
+* "Gate hash incorrect" - The gate hash is incorrect.
+
+
+.The error codes are defined with the following values:
+[%collapsible]
+====
+* "Identifier unsupported" - `0xae62185f5b2d208b365120513c49692e743c97599e72488d0fb27cf7a6014b51`
+* "Receiver not found" - `0xcabbe06881d86984e3ea09b672bc1f61b8ad46d80c5f34a54c2c7a7c6a2d666d`
+* "App not found" - `0xab1663c1b5b265d9de2c0c05080034e76bf12518f284888e53fa01753dedf944`
+* "Receiver offline" - `0x70697d73cbce5de452263f816bcf13fd1e1c0dc3ac5f80db821ac7a793834a1b`
+* "App offline" - `0x1d89a6e8e2e0dcd55a21151f069fdf9a6bcdbf48258e9bfafeef32dae1857198`
+* "Incorrect message size" - `0x2f70bf86f636965a72d7c19e56d2b89f625af9f4f847e7feaed670d60923b503`
+* "Disallowed message size" - `0x1e233adb1abf5893254eb9f062cbddaf55d5beeff8c4407edbd839c97e5cd223`
+* "Message hash incorrect" - `0x366b045da89b1a096d4233597000d16a58e983366c3e254433491dbdc5a21cf6`
+* "Signal hash incorrect" - `0xc8b1b324246f0bbfa9c41f97644de87ba57e774ec7a6681d27d91ec92e8d1586`
+* "Receiver hash incorrect" - `0xdec3ffa57e580f3bbd8ff424fcd107538fbe36a57aae64d4a1b1b311b71f92eb`
+* "Gate hash incorrect" - `0x2acebe3901077b0e4d049b62c2da185d0464ddf971e3bc254df41ed62e4458bf`
+====
+
+== Notes
+
+* Messages are only transmitted after the signal is over. This may be
+changed in a future version. This is why an online check shall be done
+before accepting all the data on the Gateway in order to save resources.
+* The Gateway shall always be assigned Receiver ID `0` and can have its
+own protocols.
+* Receivers should under no circumstances be changed. This lies within
+the responsibility of the Gateway. Apps are supposed to double-check this
+before sending any important messages, since by default, this protocol
+does not protect against malicious Gateways.
+* Multiple IDs can lead to the same Receiver.
+* Callbacks shall be in the message.
+* This is a zero-security protocol, meaning all identities are managed by
+the app and not the protocol.
+* Encryption is not included in this protocol, but made possible for both
+the full signal or just the message. It is recommended that every app
+implements their own encryption, as full encryption is going to be very
+rare and Gateways shall be generalized and not app-specific.
