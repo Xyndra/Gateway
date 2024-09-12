@@ -2,14 +2,14 @@
 
 == Purpose
 The purpose of the Gateway Protocol is to provide a connection-independent
-way to communicate with "Gateways", which have a similar role to routers.
+way to communicate with "Gateways", which are similar to routers.
 
 This is nice for the following scenarios:
 
 . You have a closed network and want to provide a way to communicate with it
 from the outside. You can create a publicly accessible Gateway and then set
 up very dynamic firewall rules.
-. You want to protect your network from DDoS attacks. Since this is designed
+. You want to protect your network from (D)DoS attacks. Since this is designed
 with "Gateway dies first" in mind, you can simply make the Gateway limited
 in resources and have it stop or throttle connections if it gets too much.
 . Apocalyptic scenario: the internet, which is centralized, gets
@@ -46,9 +46,9 @@ For more information on the parts, see xref:SpecificParts.adoc[Specific Parts].
 *Gate ID*, *Receiver ID*, *Receiver App Name* and *Message Hash* are in a
 custom format, which is used for infinite scalability.
 
-This format works by writing one byte, and then a continuation bit.If the
-continuation bit is `1`, it will repeat.If it is `0`, the last `0` s and
-from the last `1` are cut off.This has the trade-off of having to append
+This format works by writing one byte, and then a continuation bit. If the
+continuation bit is `1`, it will repeat. If it is `0`, the last `0` s and
+from the last `1` are cut off. This has the trade-off of having to append
 `10000000` if the last bit should have been `0`, however it seems like the
 best way to do it since it only uses one additional byte in the worst case
 and is extremely easy to implement.
@@ -93,9 +93,10 @@ specified size.
 
 == Notes
 
-* Messages are only transmitted after the signal is over. This may be
-changed in a future version. This is why an online check shall be done
-before accepting all the data on the Gateway in order to save resources.
+* Messages are only transmitted after the signal is completed or over.
+This may be changed in a future version. This is why an online check shall
+be done before accepting all the data on the Gateway in order to save
+resources.
 * The Gateway shall always be assigned Receiver ID `0` and can have its
 own protocols.
 * Receivers should under no circumstances be changed. This lies within
