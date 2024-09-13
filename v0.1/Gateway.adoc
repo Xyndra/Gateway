@@ -1,6 +1,29 @@
 = Gateway Protocol v0.1
 
+ifndef::env-github[]
 include::../common/Purpose.adoc[]
+endif::[]
+ifdef::env-github[]
+== Purpose
+The purpose of the Gateway Protocol is to provide a connection-independent
+way to communicate with "Gateways", which are similar to routers.
+
+This is nice for the following scenarios:
+
+. You have a closed network and want to provide a way to communicate with it
+from the outside. You can create a publicly accessible Gateway and then set
+up very dynamic firewall rules.
+. You want to protect your network from (D)DoS attacks. Since this is designed
+with "Gateway dies first" in mind, you can simply make the Gateway limited
+in resources and have it stop or throttle connections if it gets too much.
+. Apocalyptic scenario: the internet, which is centralized, gets
+blocked/censored. This protocol can be applied with radio or light signals.
+. Push towards decentralization: currently, there is no way for "normies"
+to actually host any content, so they will always be dependent on big
+platforms. The goal of this protocol is to stop this and make apps able to
+communicate with other clients semi-independently
+(You can't remove ISPs and centralized IP lists)
+endif::[]
 
 == Parts
 The Gateway Protocol consists of the following parts:
