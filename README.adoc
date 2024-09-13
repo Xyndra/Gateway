@@ -1,0 +1,18 @@
+= The Gateway Protocol
+
+include::common/Purpose.adoc[]
+
+== Current status
+
+This protocol is currently in *version 0.1*. It is not recommended for production use, and there is still
+some features that need to be implemented. Sample features include:
+
+* Continuous connection streams
+* Error correction
+* Push towards own network implementation instead of being on top of TCP or UDP
+
+'''
+
+#If you like the idea of this protocol, please consider contributing to it. You don't have to be a genius
+to write a few changes to the text, and if you don't/can't do that you can also create an issue or discussion. Writing
+your own implementation or making your apps compatible with it will also help a lot to get this into the mainstream.#

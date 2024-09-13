@@ -1,4 +1,4 @@
-= Specific Parts of the Gateway Protocol v1.0
+= Specific Parts of the Gateway Protocol v0.1
 
 == Identifier w/ version
 
@@ -6,7 +6,7 @@ Bit count: Variable(not hash because if there are too many versions, white
 noise will get problematic)
 
 This is the protocol name(including version), for example
-"Gateway Protocol v1.0".
+"Gateway Protocol v0.1".
 
 == Signal Hash
 
